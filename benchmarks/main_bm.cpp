@@ -4,11 +4,14 @@
 #include <thread>
 
 #include "sequential_tree.h"
+#include "parellel_tree.h"
 
 static SequentialTree* arbol_datos = nullptr;
 static const int VALOR_MEDIO = 10;
 static const int NUMERO_ELEMENTOS = 5;
 static const int NUMERO_VECTORES = 50;
+
+static ParallelTree* arbol_datos_parallel = nullptr;
 
 void inicializa() {
   std::random_device rd;
@@ -24,9 +27,19 @@ void inicializa() {
     else
       arbol_datos->insert(tmp);
   }
+
+  for(int i = 0; i < NUMERO_VECTORES; ++i) {
+    std::vector<double> tmp(NUMERO_ELEMENTOS);
+    for(int j = 0; j < NUMERO_ELEMENTOS; ++j) tmp[j] = uni_dis(gen);
+
+    if(arbol_datos_parallel == nullptr)
+      arbol_datos_parallel = new ParallelTree(tmp);
+    else
+      arbol_datos_parallel->insert(tmp);
+  }
 }
 
-void finaliza() { delete arbol_datos; }
+void finaliza() { delete arbol_datos ; delete arbol_datos_parallel; }
 
 static void BM_secuencial(benchmark::State& state) {
   for(auto _ : state) {
@@ -35,7 +48,15 @@ static void BM_secuencial(benchmark::State& state) {
   }
 }
 
+static void BM_secuencial_parallel(benchmark::State& state) {
+  for(auto _ : state) {
+    double res = arbol_datos_parallel->calculateMaxAverage();
+    benchmark::DoNotOptimize(res);
+  }
+}
+
 BENCHMARK(BM_secuencial)->UseRealTime()->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_secuencial_parallel)->UseRealTime()->Unit(benchmark::kMillisecond);
 
 int main(int argc, char** argv) {
   inicializa();
