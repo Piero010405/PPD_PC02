@@ -4,7 +4,7 @@
 #include <thread>
 
 #include "sequential_tree.h"
-#include "parellel_tree.h"
+#include "parallel_tree.h"
 
 static SequentialTree* arbol_datos = nullptr;
 static const int VALOR_MEDIO = 10;
