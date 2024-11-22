@@ -58,18 +58,27 @@ void ParallelTree::insert(const std::vector<double>& data) {
 
 void ParallelTree::insertInternal(SensorTree* node_ptr,
                                     const std::vector<double>& data) {
-  #pragma omp critical
-  {
-    if (node_ptr == nullptr) {
+   if (node_ptr == nullptr) {
+    #pragma omp critical
+    {
+      // En caso de que el nodo sea nullptr, creamos un nuevo nodo de manera exclusiva
       node_ptr = new ParallelTree(data);
-      return;
-    } else if (node_ptr->left == nullptr) {
-      node_ptr->left = new ParallelTree(data);
-      return;
-    } else if (node_ptr->right == nullptr) {
-      node_ptr->right = new ParallelTree(data);
-      return;
     }
+    return;
+  } else if (node_ptr->left == nullptr) {
+    #pragma omp critical
+    {
+      // Si no hay hijo izquierdo, lo insertamos de manera exclusiva
+      node_ptr->left = new ParallelTree(data);
+    }
+    return;
+  } else if (node_ptr->right == nullptr) {
+    #pragma omp critical
+    {
+      // Si no hay hijo derecho, lo insertamos de manera exclusiva
+      node_ptr->right = new ParallelTree(data);
+    }
+    return;
   }
 
   if(node_ptr->left != nullptr) insertInternal(node_ptr->left, data);
