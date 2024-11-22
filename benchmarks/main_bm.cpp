@@ -43,15 +43,15 @@ static void BM_secuencial(benchmark::State& state) {
   }
 }
 
-static void BM_secuencial_parallel(benchmark::State& state) {
-  for(auto _ : state) {
-    double res = arbol_datos_parallel->calculateMaxAverage();
-    benchmark::DoNotOptimize(res);
-  }
-}
+// static void BM_parallel(benchmark::State& state) {
+//   for(auto _ : state) {
+//     double res = arbol_datos_parallel->calculateMaxAverage();
+//     benchmark::DoNotOptimize(res);
+//   }
+// }
 
 BENCHMARK(BM_secuencial)->UseRealTime()->Unit(benchmark::kMillisecond);
-BENCHMARK(BM_secuencial_parallel)->UseRealTime()->Unit(benchmark::kMillisecond);
+// BENCHMARK(BM_parallel)->UseRealTime()->Unit(benchmark::kMillisecond);
 
 int main(int argc, char** argv) {
   inicializa();
