@@ -26,11 +26,6 @@ void inicializa() {
       arbol_datos = new SequentialTree(tmp);
     else
       arbol_datos->insert(tmp);
-  }
-
-  for(int i = 0; i < NUMERO_VECTORES; ++i) {
-    std::vector<double> tmp(NUMERO_ELEMENTOS);
-    for(int j = 0; j < NUMERO_ELEMENTOS; ++j) tmp[j] = uni_dis(gen);
 
     if(arbol_datos_parallel == nullptr)
       arbol_datos_parallel = new ParallelTree(tmp);
