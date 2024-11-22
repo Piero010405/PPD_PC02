@@ -50,21 +50,22 @@ double ParallelTree::calculateMaxAverageInternal(SensorTree* node_ptr) {
 
 void ParallelTree::insert(const std::vector<double>& data) {
   insertInternal(this, data);
+  contadorEstaciones++;
 }
 
 void ParallelTree::insertInternal(SensorTree* node_ptr,
                                     const std::vector<double>& data) {
   // std::lock_guard<std::mutex> lock(tree_mutex);
 
-  if (node_ptr == nullptr) {
-      node_ptr = new ParallelTree(data);
-      return;
-  } else if (node_ptr->left == nullptr) {
-      node_ptr->left = new ParallelTree(data);
-      return;
-  } else if (node_ptr->right == nullptr) {
-      node_ptr->right = new ParallelTree(data);
-      return;
+  if(node_ptr == nullptr) {
+    node_ptr = new ParallelTree(data);
+    return;
+  } else if(node_ptr->left == nullptr) {
+    node_ptr->left = new ParallelTree(data);
+    return;
+  } else if(node_ptr->right == nullptr) {
+    node_ptr->right = new ParallelTree(data);
+    return;
   }
 
   if(node_ptr->left != nullptr) insertInternal(node_ptr->left, data);
