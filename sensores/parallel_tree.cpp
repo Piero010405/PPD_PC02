@@ -49,30 +49,27 @@ double ParallelTree::calculateMaxAverageInternal(SensorTree* node_ptr) {
 }
 
 void ParallelTree::insert(const std::vector<double>& data) {
-  insertInternal(this, data);
-  contadorEstaciones++;
+  #pragma omp critical
+  {
+    insertInternal(this, data);
+    contadorEstaciones++;
+  }
 }
 
 void ParallelTree::insertInternal(SensorTree* node_ptr,
                                     const std::vector<double>& data) {
-  if(node_ptr == nullptr) {
-    #pragma omp critical
-    {
-      // En caso de que el nodo sea nullptr, creamos un nuevo nodo de manera exclusiva
-      node_ptr = new ParallelTree(data);
-    }
-    return;
-  } else if(node_ptr->left == nullptr) {
-    #pragma omp critical
-    {
-      // Si no hay hijo izquierdo, lo insertamos de manera exclusiva
-      node_ptr->left = new ParallelTree(data);
-    }
-  } else if(node_ptr->right == nullptr) {
-    #pragma omp critical
-    {
-      // Si no hay hijo derecho, lo insertamos de manera exclusiva
-      node_ptr->right = new ParallelTree(data);
+  #pragma omp critical
+  {
+    if(node_ptr == nullptr) {
+        // En caso de que el nodo sea nullptr, creamos un nuevo nodo de manera exclusiva
+        node_ptr = new ParallelTree(data);
+      return;
+    } else if(node_ptr->left == nullptr) {
+        // Si no hay hijo izquierdo, lo insertamos de manera exclusiva
+        node_ptr->left = new ParallelTree(data);
+    } else if(node_ptr->right == nullptr) {
+        // Si no hay hijo derecho, lo insertamos de manera exclusiva
+        node_ptr->right = new ParallelTree(data);
     }
   }
 
